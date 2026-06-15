@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a class="muted-link" href="{{ url_for('index') }}">← На главную</a>
+
+<section class="soft-card mt-3">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            {% if book.cover %}
+                <img class="cover-img" src="{{ url_for('cover_file', filename=book.cover.filename) }}" alt="Обложка книги {{ book.title }}">
+            {% else %}
+                <div class="cover-empty">Нет обложки</div>
+            {% endif %}
+        </div>
+        <div class="col-lg-8">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                <div>
+                    <p class="eyebrow mb-1">Книга</p>
+                    <h1>{{ book.title }}</h1>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-self-start">
+                    {% if has_role('администратор', 'модератор') %}
+                        <a class="btn btn-outline-rose btn-sm" href="{{ url_for('edit_book', book_id=book.id) }}">Редактировать</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <dl class="book-info mt-3">
+                <div><dt>Автор</dt><dd>{{ book.author }}</dd></div>
+                <div><dt>Год</dt><dd>{{ book.year }}</dd></div>
+                <div><dt>Издательство</dt><dd>{{ book.publisher }}</dd></div>
+                <div><dt>Объём</dt><dd>{{ book.pages }} стр.</dd></div>
+                <div><dt>Жанры</dt><dd>{% for genre in book.genres %}<span class="tag">{{ genre.name }}</span>{% endfor %}</dd></div>
+                <div><dt>Средняя оценка</dt><dd>{{ book.avg_rating if book.avg_rating is not none else 'нет' }}</dd></div>
+                <div><dt>Рецензий</dt><dd>{{ book.review_count }}</dd></div>
+            </dl>
+
+            <h2 class="h5 mt-4">Описание</h2>
+            <div class="markdown-content">{{ book.description|markdown|safe }}</div>
+        </div>
+    </div>
+</section>
+
+<section class="soft-card mt-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
+        <h2 class="h4 mb-0">Рецензии</h2>
+        {% if can_review %}
+            <a class="btn btn-rose" href="{{ url_for('add_review', book_id=book.id) }}">Написать рецензию</a>
+        {% endif %}
+    </div>
+
+    {% if own_review %}
+        <div class="own-review mb-4">
+            <div class="fw-bold mb-1">Ваша рецензия</div>
+            <div class="small text-muted mb-2">Оценка: {{ own_review.rating }}</div>
+            <div class="markdown-content">{{ own_review.text|markdown|safe }}</div>
+        </div>
+    {% endif %}
+
+    {% if reviews %}
+        <div class="review-list">
+            {% for review in reviews %}
+                <article class="review-card">
+                    <div class="d-flex justify-content-between gap-2 mb-2">
+                        <strong>{{ review.user.full_name }}</strong>
+                        <span class="rating-badge">{{ review.rating }}/5</span>
+                    </div>
+                    <div class="small text-muted mb-2">{{ review.created_at.strftime('%d.%m.%Y %H:%M') if review.created_at else '' }}</div>
+                    <div class="markdown-content">{{ review.text|markdown|safe }}</div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">Пока нет рецензий.</div>
+    {% endif %}
+</section>
+{% endblock %}

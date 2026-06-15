@@ -1,0 +1,10 @@
+Flask==3.0.3
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.31
+Werkzeug==3.0.3
+bleach==6.1.0
+Markdown==3.6
+python-dotenv==1.0.1
+PyMySQL==1.1.1
+Pillow==10.4.0

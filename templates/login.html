@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="login-wrap">
+    <section class="soft-card login-card">
+        <p class="eyebrow mb-1">Вход</p>
+        <h1 class="mb-4">Авторизация</h1>
+        <form method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label class="form-label" for="login">Логин</label>
+                <input class="form-control" id="login" name="login" required value="{{ request.form.get('login', '') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="password">Пароль</label>
+                <input class="form-control" id="password" name="password" type="password" required>
+            </div>
+            <div class="form-check mb-4">
+                <input class="form-check-input" id="remember" name="remember" type="checkbox">
+                <label class="form-check-label" for="remember">Запомнить меня</label>
+            </div>
+            <button class="btn btn-rose w-100" type="submit">Войти</button>
+        </form>
+    </section>
+</div>
+{% endblock %}
